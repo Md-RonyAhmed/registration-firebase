@@ -1,11 +1,56 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+
+import {
+	useCreateUserWithEmailAndPassword,
+	useUpdateProfile,
+} from "react-firebase-hooks/auth";
+import auth from "../../firebase/firebase.config";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+import Loading from "../Loading";
+
 /* eslint-disable react/prop-types */
 const Email = ({ isVisible }) => {
 	if (!isVisible) {
 		return null; // If isVisible is false, don't render the component (hide it).
 	}
+	const [createUserWithEmailAndPassword, user, loading, error] =
+		useCreateUserWithEmailAndPassword(auth, {
+			sendEmailVerification: true,
+		});
+	const [updateProfile, updating] = useUpdateProfile(auth);
+	const navigate = useNavigate();
+	let errorElement;
+	if (loading || updating) {
+		return <Loading></Loading>;
+	}
+	if (error) {
+		errorElement = <p className="text-red-600">{error?.message}</p>;
+	}
+
+	if (user) {
+		navigate("/");
+	}
+	const handleRegister = async (event) => {
+		event.preventDefault();
+		const name = event.target.name.value;
+		const email = event.target.email.value;
+		const password = event.target.password.value;
+
+		await createUserWithEmailAndPassword(email, password);
+		await updateProfile({ displayName: name });
+		Swal.fire({
+			icon: "success",
+			title: "Sign up Successfully",
+			toast: true,
+			position: "top-start",
+			showConfirmButton: false,
+			timer: 3000,
+			timerProgressBar: true,
+		});
+	};
 	return (
-		<form // onSubmit={handleRegister}
-		>
+		<form onSubmit={handleRegister}>
 			<div className="mt-4">
 				<div>
 					<label
@@ -80,6 +125,7 @@ const Email = ({ isVisible }) => {
 					className="cursor-pointer w-full font-bold mr-3 inline-block rounded bg-primary px-8 py-3 text-md uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] motion-reduce:transition-none dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
 				/>
 			</div>
+			{errorElement}
 		</form>
 	);
 };

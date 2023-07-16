@@ -1,9 +1,51 @@
+import {useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2'; 
+// import withReactContent from 'sweetalert2-react-content';
+import auth from "../../firebase/firebase.config";
+import {
+	useSignInWithFacebook,
+	useSignInWithGoogle,
+} from "react-firebase-hooks/auth";
+import Loading from "../Loading";
 const SocialLogin = () => {
+	const [signInWithGoogle, googleUser, googleLoading, googleError] =
+		useSignInWithGoogle(auth);
+
+	const [signInWithFacebook, facebookUser, facebookLoading, facebookError] =
+		useSignInWithFacebook(auth);
+
+	const navigate = useNavigate();
+
+	let errorElement;
+	if (googleLoading || facebookLoading) {
+		return <Loading></Loading>;
+	}
+
+	if (googleError || facebookError) {
+		errorElement = (
+			<p className="text-red-600">
+				Error: {googleError?.message}
+				{facebookError?.message}
+			</p>
+		);
+	}
+	if (googleUser || facebookUser) {
+		navigate("/");
+           Swal.fire({
+               icon: 'success',
+               title: 'Log In Successfully',
+               toast: true,
+               position: 'top-start',
+               showConfirmButton: false,
+               timer: 3000,
+               timerProgressBar: true,
+             });
+	}
 	return (
 		<div>
-			{/* {errorElement} */}
+			{errorElement}
 			<button
-				// onClick={() => signInWithGoogle()}
+				onClick={() => signInWithGoogle()}
 				aria-label="Continue with google"
 				type="button"
 				className="focus:outline-none focus:ring-2 focus:ring-offset-1 py-3.5 px-4 rounded-lg flex items-center w-full mt-10 text-center bg-red-600 justify-center"
@@ -36,9 +78,9 @@ const SocialLogin = () => {
 					Sign up with Google
 				</p>
 			</button>
-			
+
 			<button
-				// onClick={() => signInWithFacebook()}
+				onClick={() => signInWithFacebook()}
 				aria-label="Continue with facebook"
 				type="button"
 				className="focus:outline-none focus:ring-2 focus:ring-offset-1 py-3.5 px-4 rounded-lg flex items-center w-full mt-10 text-center bg-blue-600 justify-center"
