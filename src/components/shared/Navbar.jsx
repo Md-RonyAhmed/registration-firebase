@@ -41,9 +41,9 @@ const Navbar = () => {
 			>
 				<div className="flex w-full flex-wrap items-center justify-between px-3">
 					<div>
-						<a
+						<Link
 							className="mx-2 my-1 flex items-center text-neutral-900 hover:text-neutral-900 focus:text-neutral-900 lg:mb-0 lg:mt-0"
-							href="#"
+							to=""
 						>
 							<img
 								className="mr-2"
@@ -52,7 +52,7 @@ const Navbar = () => {
 								alt="TE Logo"
 								loading="lazy"
 							/>
-						</a>
+						</Link>
 					</div>
 					<button
 						className="block border-0 bg-transparent px-2 text-neutral-500 hover:no-underline hover:shadow-none focus:no-underline focus:shadow-none focus:outline-none focus:ring-0 dark:text-neutral-200 lg:hidden"
@@ -91,14 +91,14 @@ const Navbar = () => {
 								className="my-4 pl-2 lg:my-0 lg:pl-2 lg:pr-1"
 								data-te-nav-item-ref
 							>
-								<a
+								<Link
 									className="text-neutral-500 hover:text-neutral-700 focus:text-neutral-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:text-neutral-400 lg:px-2 [&.active]:text-black/90 dark:[&.active]:text-neutral-400"
 									aria-current="page"
-									href="/"
+									to="/"
 									data-te-nav-link-ref
 								>
 									Register App
-								</a>
+								</Link>
 							</li>
 						</ul>
 
